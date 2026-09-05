@@ -1,0 +1,14 @@
+panel `daily`: 80 captures over 8 tickers -> ../results
+  25/80  (97s elapsed)
+  50/80  (176s elapsed)
+  75/80  (270s elapsed)
+  80/80  (305s elapsed)
+  wrote panel.csv: 80 rows
+  wrote fits.csv: 11430 rows
+  wrote arbitrage.csv: 480 rows
+  wrote localvol.csv: 480 rows
+  wrote martingale.csv: 1440 rows
+  wrote barriers.csv: 20160 rows
+  wrote timing.csv: 480 rows
+  wrote dea.csv: 1905 rows
+done in 304.6s

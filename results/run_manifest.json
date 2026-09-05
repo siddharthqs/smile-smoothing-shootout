@@ -1,0 +1,180 @@
+{
+  "driver": "siddh_papers/rustyqlib_papers/smile-smoothing-shootout/study (bin `study`)",
+  "elapsed_seconds": 304.5613528,
+  "filters": {
+    "forward_pairs": 5,
+    "implied_vol_bounds": [
+      0.005,
+      5.0
+    ],
+    "max_moneyness": 1.6,
+    "max_relative_spread": 0.25,
+    "max_years_to_expiry": 1.5,
+    "min_days_to_expiry": 1,
+    "min_moneyness": 0.6,
+    "min_quotes_per_expiry": 5,
+    "otm_only": true
+  },
+  "generated_at": "2026-09-02T01:20:02.465520100-04:00",
+  "grid": {
+    "k_hi": 0.4,
+    "k_lo": -0.4,
+    "k_points": 81,
+    "surface_samples_per_slice": 41,
+    "t_points": 41,
+    "t_span": "first fitted pillar to last fitted pillar"
+  },
+  "instruments": {
+    "barrier_levels": [
+      {
+        "dir": "down",
+        "mult": 0.95
+      },
+      {
+        "dir": "down",
+        "mult": 0.9
+      },
+      {
+        "dir": "down",
+        "mult": 0.85
+      },
+      {
+        "dir": "up",
+        "mult": 1.05
+      },
+      {
+        "dir": "up",
+        "mult": 1.1
+      },
+      {
+        "dir": "up",
+        "mult": 1.15
+      }
+    ],
+    "barrier_style": "continuously monitored knock-out, Brownian-bridge corrected",
+    "maturities_years": [
+      0.08333333333333333,
+      0.25,
+      0.5
+    ],
+    "maturity_labels": [
+      "1M",
+      "3M",
+      "6M"
+    ],
+    "strike_multiple_of_spot": 1.0
+  },
+  "library": {
+    "features": [
+      "fetch"
+    ],
+    "git_commit": "652e2639ae3b9828b7409ef615e819d0619d8cb5",
+    "git_status": [
+      "M src/equity/models/essvi.rs",
+      "D src/equity/vanila_option.rs~"
+    ],
+    "git_worktree_dirty": true,
+    "lib_target": "rustyqlib",
+    "package": "RustyQLib",
+    "reproduce": "check out `git_commit` of RustyQLib, apply `library_diff.patch`, then run the paper's study driver (its Cargo.toml points at the RustyQLib checkout via a path dependency)",
+    "rustc": "see rustc --version",
+    "working_tree_diff_file": "library_diff.patch",
+    "working_tree_diff_hash": "6da4b6de705586f76a51eb84403b4bfd6e655b8d"
+  },
+  "models": {
+    "de_americanization": "rustyqlib::equity::option_chain::de_americanize_chain, applied to every chain before the surface builder: parity forward -> implied carry -> CRR early-exercise premium subtracted from each mid, iterated twice (tree_steps = 201). The carry is measured from the chain's own parity forwards, never assumed. Per-expiry outcomes land in dea.csv.",
+    "essvi": "per-expiry eSSVI, sequential + penalties (EssviSurfaceFit::fit_with)",
+    "essvi_butterfly_penalty": 10.0,
+    "essvi_calendar_penalty": 1000.0,
+    "essvi_g05": "global eSSVI (Mingone 2022), power-law psi backbone, gamma = 1/2 (EssviSurfaceFit::fit_global)",
+    "essvi_gfree": "global eSSVI (Mingone 2022), power-law psi backbone, gamma fitted (EssviSurfaceFit::fit_global)",
+    "essvi_sg05": "sequential greedy-tube eSSVI, power-law backbone, gamma = 1/2, Hendriks-Martini conditions by construction slice-by-slice (EssviSurfaceFit::fit_sequential_backbone)",
+    "local_vol": "rustyqlib::equity::smoothed_surface::dupire -- one shared implementation; only variance_derivatives differs by model",
+    "local_vol_clamps": [
+      0.01,
+      3.0
+    ],
+    "ssvi": "global SSVI with power-law curvature (SsviSurfaceFit::fit)",
+    "svi": "per-expiry raw SVI (SviSurfaceFit::fit) -- unstructured benchmark",
+    "universe": "AMD, DIA, GOOGL, IWM, META, QQQ, SPY, TSLA over 2026-08-14..2026-08-27 (ten sessions); expiries 1 day to 1.5 years"
+  },
+  "monte_carlo": {
+    "barrier_min_substeps_per_leg": 64,
+    "barrier_paths": 40000,
+    "barrier_seed": 20260824,
+    "barrier_steps_per_year": 252,
+    "drift": "d ln F(t)/dt from the chain's parity forwards (SmoothedSurface::forward on the fitted surface), NOT the risk-free zero rate. The library's Dupire is written in forward log-moneyness, so this is the only drift its local vol is consistent with; drifting at r with zero dividends leaves E[S_T] = S e^{rT} and breaks put/call parity against F_T by the implied dividend/borrow yield. Discounting still comes from the bootstrapped curve.",
+    "martingale_impl": "rustyqlib::validation::martingale::martingale_report, fed a synthetic growth curve whose continuous zero at t is ln(F(t)/S)/t so its internal drift matches the targets (the `drift_source` column records which curve each row used)",
+    "martingale_paths": 32768,
+    "martingale_seed": 20260824,
+    "martingale_steps_per_year": 104,
+    "martingale_z_threshold": 3.0,
+    "scheme": "log-Euler, antithetic pairs; identical seed and normal draws across the three models, and every barrier maturity priced off one path set"
+  },
+  "panel": {
+    "capture_times": [
+      "1530",
+      "1538"
+    ],
+    "captures": 80,
+    "curves": "data/curves/ust-<DATE>.json (US Treasury par yields), bootstrapped via data::treasury::bootstrap_from_document and rolled to the chain as-of date",
+    "daily_selection": "the capture nearest 1530 in each session (short sessions fall back to their closest stamp; the `time` column records what was used)",
+    "daily_target_time": "1530",
+    "dates": [
+      "2026-08-14",
+      "2026-08-17",
+      "2026-08-18",
+      "2026-08-19",
+      "2026-08-20",
+      "2026-08-21",
+      "2026-08-24",
+      "2026-08-25",
+      "2026-08-26",
+      "2026-08-27"
+    ],
+    "slice": "daily",
+    "source": "data/raw/<TICKER>/<DATE>/<HHMM>.json.gz (Cboe delayed quotes)",
+    "tickers": [
+      "AMD",
+      "DIA",
+      "GOOGL",
+      "IWM",
+      "META",
+      "QQQ",
+      "SPY",
+      "TSLA"
+    ]
+  },
+  "repair": "rustyqlib::equity::surface_repair::repair_arbitrage (convex-hull butterfly projection + total-variance calendar sweep), applied ONCE; all three models fit the same repaired pillars",
+  "roundtrip": {
+    "carry_yield": "the repricing passes q = r - ln(F(t)/S)/t so the engine, the target Black-Scholes price and the implied-vol inversion all put the forward where the fitted smile is quoted. `usability_report` takes no carry argument, so its ur_* columns still assume zero dividends.",
+    "engine": "finite difference (Crank-Nicolson), Model::LocalVol on the sampled fitted VolSurface -- i.e. the pipeline a desk actually runs",
+    "fd_spot_steps": 400,
+    "fd_time_steps": 400,
+    "k_offsets": [
+      -0.1,
+      -0.05,
+      0.0,
+      0.05,
+      0.1
+    ],
+    "usability_max_expiries": 4,
+    "usability_moneyness": [
+      0.85,
+      1.15
+    ],
+    "usability_report": "rustyqlib::equity::usability::usability_report, fed the model's ANALYTIC local_vol_checked",
+    "usability_strikes_per_expiry": 3
+  },
+  "rows": {
+    "arbitrage.csv": 480,
+    "barriers.csv": 20160,
+    "dea.csv": 1905,
+    "fits.csv": 11430,
+    "localvol.csv": 480,
+    "martingale.csv": 1440,
+    "panel.csv": 80,
+    "timing.csv": 480
+  },
+  "study": "smile-smoothing-shootout"
+}

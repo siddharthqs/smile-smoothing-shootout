@@ -1,0 +1,9 @@
+{
+  "captures": 80,
+  "dea": "chains are de-Americanized first, as in the daily/intraday panels",
+  "elapsed_seconds": 552.9245449,
+  "generated_by": "study --panel loo",
+  "panel": "loo",
+  "protocol": "for each daily capture (the 1530 snapshot) and each INTERIOR repaired pillar, refit every arm on the remaining pillars and evaluate the refitted surface at the held-out slice's strikes against the repaired pillar vols (the same target the in-sample RMSE uses). First and last pillars are never held out (extrapolation, not interpolation). The held-out expiry's parity forward is not handed to the fit; strike-to-moneyness conversion uses each fit's own interpolation over the remaining pillar forwards, which is identical code across arms.",
+  "rows": 10470
+}
