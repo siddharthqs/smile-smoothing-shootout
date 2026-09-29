@@ -1,0 +1,29 @@
+[package]
+name = "smile-shootout-study"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[[bin]]
+name = "study"
+path = "src/main.rs"
+
+[dependencies]
+# RustyQLib, pinned to the commit every released result was produced with.
+# The package is spelled "RustyQLib" while the lib target is "rustyqlib",
+# hence the `package = ` rename. `fetch` is needed only for
+# `data::treasury` (the par-yield bootstrap); nothing in this driver
+# touches the network.
+rustyqlib = { package = "RustyQLib", git = "https://github.com/siddharthqs/RustyQLib", rev = "ee2103d3131b90d242520cb51b4b57fd5e260395", features = ["fetch"] }
+
+chrono = { version = "0.4", features = ["serde"] }
+serde_json = { version = "1", features = ["float_roundtrip"] }
+flate2 = "1"
+rayon = "1"
+rand = "0.8"
+rand_pcg = "0.3"
+rand_distr = "0.4"
+
+[profile.release]
+opt-level = 3
+debug = false
